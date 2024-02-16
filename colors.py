@@ -1,0 +1,6 @@
+YLLOW = "\033[33m"
+GREEN = "\033[32m"
+RED = "\033[31m"
+DEFALUT = "\033[0m"
+PURPURE = "\033[35m"
+BIRUZA = "\033[36m"
