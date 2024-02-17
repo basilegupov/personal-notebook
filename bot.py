@@ -68,11 +68,9 @@ class ContactAssistant:
                     self.save_data()  
                     return f"{YLLOW}Номер телефону успішно змінено!!!{PISKAZKA_SHOW_ALL}"
                 else:
-                    raise ValueError(f"{YLLOW}Номер може містити тільки 10 цифри !!!{BIRUZA}"
-                                     f"\n# Приклад - 0931245891")
+                    raise ValueError(f"{BAD_FORMAT_PHONE}")
             else:
-                raise IndexError(f"{YLLOW}Такого іменні не знайдено у вашій телефоній книзі !!!"
-                                 f"{DEFALUT}{PISKAZKA_SHOW_ALL} ")
+                raise IndexError(f"{NOT_FOUND_NAME}")
         except (ValueError, IndexError) as e:
             raise InputError(str(e))
 
@@ -83,8 +81,7 @@ class ContactAssistant:
                 return (f"{YLLOW}За вказаним іменем {BIRUZA}{name}{YLLOW} знайдено номер"
                         f"{BIRUZA} {record.phones[0]}{DEFALUT}")
             else:
-                raise IndexError(f"{YLLOW}Такого іменні не знайдено у вашій телефоній книзі !!!"
-                                 f"{DEFALUT}{PISKAZKA_SHOW_ALL} ")
+                raise IndexError(f"{NOT_FOUND_NAME}")
         except (ValueError, IndexError) as e:
             raise InputError(str(e))
 
@@ -133,18 +130,20 @@ class CommandHandler:
         return self.contact_assistant.change_contact(name, phone)
 
     def handle_phone(self, args):
-        if len(args) == 0:
-            raise InputError(BAD_COMMAND_PHONE)
+        
         args_list = args.split(" ")
-        name = args_list[1]
+        if len(args_list) == 2:
+            raise InputError(BAD_COMMAND_PHONE)
+        
+        name = args_list[2]
         return self.contact_assistant.get_phone(name)
 
     def handle_show(self, args):
         return self.contact_assistant.show_all_contacts()
 
     def handle_bye(self, args):
-        print("Good bye!")
-        return None
+        
+        return f"{YLLOW}Good bye!"
     
     def handle_search(self, args):
         if len(args) == 0:
@@ -156,45 +155,53 @@ class CommandHandler:
         if not matching_records:
             return f"{YLLOW}Нажаль нічого не знайдено  {DEFALUT}"
         else:
-            result = (f"{YLLOW}За Вашим запитом = {RED}{query}{YLLOW}"
-                      f" було знайдено наступні записи :{DEFALUT}\n")
+            result = f"{YLLOW}За Вашим запитом * {RED}{query}{YLLOW} * було знайдено наступні записи :{DEFALUT}\n"
+            
             for record in matching_records:
                 phone_numbers = ', '.join(str(phone) for phone in record.phones)
-                result += f"{record.name}: {phone_numbers}\n"
+                result += f"{YLLOW}{record.name}: {phone_numbers}\n"
             return result.strip()
 
     def choice_action(self, data):
-        actions = {
+        
+        ACTIONS = {
             'hello': self.handle_hello,
             'add': self.handle_add,
             "change": self.handle_change,
-            "phone": self.handle_phone,
+            "get phone": self.handle_phone,
             'search': self.handle_search,
-            "show": self.handle_show,
-            "close": self.handle_bye,
+            "show all": self.handle_show,
             "exit": self.handle_bye,
-            "good bye": self.handle_bye,
+            
         }
-        return actions.get(data, lambda args: f'{YLLOW}Tака команда не пітримується наразі\n'
-                                              f'{DEFALUT}{DOSTUPNI_COMANDY}')
+        return ACTIONS.get(data, lambda args: f'{NOT_FOUND_COMMAND}')
 
     def process_input(self, user_input):
+        '''Функція яка приймає один аргумент - стрічку що вів користувач.
+        Аналізує її і повертає або помилку або валідну функцію яка відповідає вказаній словнику *ACTIONS команді
+        '''
         try:
             if not user_input:
-                raise InputError(f'{YLLOW}Ви нічого не ввели \n{DOSTUPNI_COMANDY}')
+                raise InputError(f'{YLLOW}Ви нічого не ввели \n{DOSTUPNI_COMANDY}{DEFALUT}')
 
             space_index = user_input.find(' ')
 
             if space_index != -1:
-                first_word = user_input[:space_index]
+                list_word = user_input.lower().strip().split()
+                first_word= user_input[:space_index]
+                
+                if list_word[0] == "show" and list_word[1] == "all":
+                    first_word = "show all"
+                elif list_word[0] == "get" and list_word[1] == "phone":
+                    first_word = "get phone"
+                
             else:
                 first_word = user_input
-
-            if first_word in ["good", "bye"]:
-                first_word = f"{YLLOW}Good bye"
+                
 
             func = self.choice_action(first_word)
             result = func(user_input)
+           
 
             if result is None:
                 return None
@@ -213,7 +220,7 @@ class Bot:
         contact_assistant = ContactAssistant()
         command_handler = CommandHandler(contact_assistant)
         # Список вариантів для автодоповнення
-        words = ['hello', 'help', 'hi', 'hey', 'add', 'change', 'phone', 'show all', 'search', 'good bye', 'close', 'exit']
+        words = ['hello', 'help', 'hi', 'hey', 'add', 'change', 'phone', 'show all', 'search', 'exit']
 
         # Створюємо комплиттер з нашими варінтами
         # completer = WordCompleter(words, ignore_case=True)

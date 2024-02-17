@@ -1,5 +1,7 @@
 from datetime import datetime
 from collections import UserDict
+from colors import *
+from comands import *
 
 
 class Field:
@@ -7,7 +9,7 @@ class Field:
         if not self.is_valid(value):
             if f"{self.__class__.__name__.lower()}" == "phone":
         
-                raise ValueError(f"Номер може містити тільки 10 цифри !!!\n# Приклад - 0931245891")
+                raise ValueError(BAD_FORMAT_PHONE)
         self.__value = value
 
     @property
@@ -19,7 +21,7 @@ class Field:
         if not self.is_valid(new_value):
             if f"{self.__class__.__name__.lower()}" == "phone":
         
-                raise ValueError(f"Номер може містити тільки 10 цифри !!!\n# Приклад - 0931245891")
+                raise ValueError(BAD_FORMAT_PHONE)
         self.__value = new_value
 
     def __str__(self):
@@ -43,7 +45,7 @@ class Phone(Field):
         if len(value) == 10 and value.isdigit():
             return value
         else:
-            raise ValueError(f"Invalid phone number format phone for '{value}'")
+            raise ValueError(f"\n {YLLOW}-- <'{RED}{value}{YLLOW}'> -- {BAD_FORMAT_PHONE}")
 
 
 class Birthday(Field):
@@ -69,16 +71,16 @@ class Record:
         initial_len = len(self.phones)
         self.phones = [p for p in self.phones if p.value != phone]
         if len(self.phones) == initial_len:
-            raise ValueError(f"Phone number '{phone}' not found")
+            raise ValueError(f"{YLLOW}Такого номера телефона <--'{RED}{phone}{YLLOW}-->' немає нажаль у вашій телефоній книжці")
 
     def edit_phone(self, old_phone, new_phone):
         if not Phone(new_phone).is_valid(new_phone):
-            raise ValueError(f"Invalid phone number format for '{new_phone}'")
+            raise ValueError (f"\n {YLLOW}-- <'{RED}{new_phone}{YLLOW}'> -- {BAD_FORMAT_PHONE}")
         for p in self.phones:
             if p.value == old_phone:
                 p.value = new_phone
                 return
-        raise ValueError(f"Phone number '{old_phone}' not found")
+        raise ValueError(f"{YLLOW}Такого номера телефона <--'{RED}{old_phone}{YLLOW}-->' немає нажаль у вашій телефоній книжці")
 
     def find_phone(self, phone):
         found_numbers = [p for p in self.phones if p.value == phone]
