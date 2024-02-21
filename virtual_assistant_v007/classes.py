@@ -182,6 +182,8 @@ class AddressBook(UserDict):
         matching_records = []
 
         for record in self.data.values():
+            if record in matching_records:
+                continue
             if query.lower() in str(record.name).lower():
                 matching_records.append(record)
             for phone in record.phones:

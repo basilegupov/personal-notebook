@@ -156,19 +156,34 @@ class ContactAssistant:
         except (ValueError, IndexError) as e:
             raise InputError(str(e))
 
+    def outlist(self, list_for_output):
+            
+        result = f'{GREEN}{"Name":<10} {"Birthday":^12} {"Phone":<12} {"Email":<20} {"Address":<20} {YLLOW}\n'
+        for record in list_for_output:
+            phone_numbers = ', '.join(str(phone) for phone in record.phones)
+            emails = ', '.join(map(str, [email.value for email in record.emails if email.value]))
+            result += (f"{record.name.value:<10} {str(record.birthday):^12} {phone_numbers:<12}"
+                        f" {emails:<20} {str(record.address):<20}\n")
+            
+        return result
+
+
     def show_all_contacts(self):
         records = list(self.address_book.values())
         if not records:
             return f"{YLLOW}Ваша телефонна книга поки не містить жодного конткту{DEFALUT}"
         else:
-            result = f'{GREEN}{"Name":<10} {"Birthday":^12} {"Phone":<12} {"Email":<20} {"Address":<20} {YLLOW}\n'
-            for record in records:
-                phone_numbers = ', '.join(str(phone) for phone in record.phones)
-                emails = ', '.join(map(str, [email.value for email in record.emails if email.value]))
-                result += (f"{record.name.value:<10} {str(record.birthday):^12} {phone_numbers:<12}"
-                           f" {emails:<20} {str(record.address):<20}\n")
+            return self.outlist(records).strip()
+        
+    def search_context(self, context:str):
 
-            return result.strip()
+        matching_records = self.address_book.search(context)
+        if not matching_records:
+            return f"{YLLOW}Нажаль, нічого не знайдено  {DEFALUT}"
+        else:
+            result = f"{YLLOW}За Вашим запитом = {RED}{context}{YLLOW} було знайдено наступні записи :{DEFALUT}\n"
+            result += self.outlist(matching_records)
+        return result.strip()
 
     def delete_contact(self, name):
         try:
@@ -303,19 +318,10 @@ class CommandHandler:
 
         query = args.split(" ", 1)[1]
 
-        matching_records = self.contact_assistant.address_book.search(query)
+        # matching_records = self.contact_assistant.address_book.search(query)
+        result = self.contact_assistant.search_context(query)
 
-        if not matching_records:
-            return f"{YLLOW}Нажаль нічого не знайдено  {DEFALUT}"
-        else:
-            result = f"{YLLOW}За Вашим запитом = {RED}{query}{YLLOW} було знайдено наступні записи :{DEFALUT}\n"
-            result += f'{GREEN}{"Name":<10} {"Birthday":^12} {"Phone":<12} {"Email":<20} {"Address":<20} {YLLOW}\n'
-            for record in matching_records:
-                phone_numbers = ', '.join(str(phone) for phone in record.phones)
-                emails = ', '.join(map(str, [email.value for email in record.emails if email.value]))
-                result += (f"{record.name.value:<10} {str(record.birthday):^12} {phone_numbers:<12}"
-                           f" {emails:<20} {str(record.address):<20}\n")
-            return result.strip()    
+        return result.strip()    
     
     def handle_sorted(self, args):
         try:
