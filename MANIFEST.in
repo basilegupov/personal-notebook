@@ -1,1 +1,3 @@
 include README.md
+include virtual_assistant_v007/*.txt
+include virtual_assistant_v007/*.json
