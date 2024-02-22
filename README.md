@@ -20,10 +20,8 @@ personal-notebook/
 ├── README.md
 ├── requirements.txt
 ├── setup.py
-├── contacts.json
-├── notes.json
 ├── .gitignore
-├── personal_assistant2/
+├── virtual_assistant_v007/
 │   ├── __init__.py
 │   ├── main.py
 │   ├── bot.py
@@ -76,7 +74,7 @@ personal-notebook/
 | 3. Перевірка встановлених пакетів   | pip list                          | pip3 list                          |
 | 4. Встановлення пакету              | pip install -e .                  | pip3 install -e .                  |
 | 5. Запуск бота-асистента            | run-assistant                     | run-assistant                      |
-| Видалення пакету                    | pip uninstall personal-assistant2 | pip3 uninstall personal-assistant2 |
+| Видалення пакету                    | pip uninstall virtual_assistant_v007 | pip3 uninstall virtual_assistant_v007 |
 | Деактивація віртуального середовищя | deactivate                        | deactivate                         |
 
 <a name='використання'></a>
