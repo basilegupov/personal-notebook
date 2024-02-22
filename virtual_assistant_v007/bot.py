@@ -18,7 +18,7 @@ class ContactAssistant:
 
     def __init__(self):
         self.address_book = AddressBook()
-        self.file_path = "contacts.json"
+        self.file_path = os.path.abspath(os.getcwd()) + r"/virtual_assistant_v007/" + "contacts.json"
 
         if os.path.exists(self.file_path):
             self.load_data()

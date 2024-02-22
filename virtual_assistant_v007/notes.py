@@ -1,3 +1,4 @@
+import os
 import json
 from textwrap import wrap
 from virtual_assistant_v007.colors import *
@@ -6,7 +7,8 @@ from datetime import datetime
 
 def load_notes():
     try:
-        with open('notes.json', 'r') as file:
+        file_path = os.path.abspath(os.getcwd()) + r"/virtual_assistant_v007/" + "notes.json"
+        with open(file_path, 'r') as file:
             notes = json.load(file)
     except FileNotFoundError:
         notes = []
@@ -14,7 +16,8 @@ def load_notes():
 
 
 def save_notes(notes):
-    with open('notes.json', 'w') as file:
+    file_path = os.path.abspath(os.getcwd()) + r"/virtual_assistant_v007/" + "notes.json"
+    with open(file_path, 'w') as file:
         json.dump(notes, file, indent=2)
 
 
