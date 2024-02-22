@@ -34,7 +34,7 @@ class Field:
 class Name(Field):
     def is_valid(self, value):
         return isinstance(value, str) and value
-    
+
 
 class Phone(Field):
     def __init__(self, value):
@@ -47,7 +47,7 @@ class Phone(Field):
         if not value:
             return True
         return isinstance(value, str) and value.isdigit() and len(value) == 10
-    
+
 
 class Email(Field):
 
@@ -60,13 +60,13 @@ class Email(Field):
         if not value:
             return True
         return re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$', value)
-    
+
     def __json__(self):
         return str(self.value) if self.value else None
-    
+
 
 class Address(Field):
-    
+
     def __json__(self):
         return str(self.value) if self.value else None
 
@@ -118,7 +118,7 @@ class Record:
     def add_email(self, email):
         email_obj = Email(email)
         self.emails.append(email_obj)
-        
+
     def set_birthday(self, birthday):
         self.birthday = Birthday(birthday)
 
@@ -159,7 +159,7 @@ class Record:
             return days_left
         else:
             return None
-        
+
     def __json__(self):
         record_data = {
             "name": self.name.__json__(),
@@ -181,22 +181,36 @@ class AddressBook(UserDict):
     def search(self, query):
         matching_records = []
 
+        def is_present(arg):
+            result = False
+            for item in arg:
+                if item:
+                    result = True
+            return result
+
         for record in self.data.values():
-            if record in matching_records:
-                continue
-            if query.lower() in str(record.name).lower():
-                matching_records.append(record)
-            for phone in record.phones:
-                if query in str(phone.value):
-                    matching_records.append(record)
-            for email in record.emails:
-                if query.lower() in str(email).lower():
-                    matching_records.append(record)
-            if query.lower() in str(record.address).lower():
+
+            if ((query.lower() in str(record.name).lower())
+                    or is_present([query in str(phone.value) for phone in record.phones])
+                    or is_present([query.lower() in str(email).lower() for email in record.emails])
+                    or (query.lower() in str(record.address).lower())):
                 matching_records.append(record)
 
+            # if query.lower() in str(record.name).lower():
+            #     matching_records.append(record)
+            #     continue
+            # for phone in record.phones:
+            #     if query in str(phone.value):
+            #         matching_records.append(record)
+            #         break
+            # for email in record.emails:
+            #     if query.lower() in str(email).lower():
+            #         matching_records.append(record)
+            #         break
+            # if query.lower() in str(record.address).lower():
+
         return matching_records
-    
+
     def add_record(self, record):
         self.data[record.name.value] = record
 
@@ -205,7 +219,7 @@ class AddressBook(UserDict):
             if record.name.value.lower() == name.lower():
                 return record
         return None
-   
+
     def delete(self, name):
         if name in self.data:
             del self.data[name]

@@ -167,7 +167,6 @@ class ContactAssistant:
             
         return result
 
-
     def show_all_contacts(self):
         records = list(self.address_book.values())
         if not records:
