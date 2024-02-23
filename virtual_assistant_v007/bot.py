@@ -19,7 +19,6 @@ class ContactAssistant:
     def __init__(self):
         self.address_book = AddressBook()
         self.file_path = "contacts.json"
-
         if os.path.exists(self.file_path):
             self.load_data()
 
@@ -62,12 +61,13 @@ class ContactAssistant:
                         
                         phones = record_data.get("phones", [])
                         for phone in phones:
+                            if phone in self.address_book.dict_phones:
+                                raise ValueError(f"{phone.value} already exist on {self.address_book.dict_phones[phone]}")
                             record.add_phone(phone)
-                        
                         emails = record_data.get("emails", [])
                         for email in emails:
                             record.add_email(email)
-                        
+
                         self.address_book.add_record(record)
         except (OSError, json.JSONDecodeError, KeyError) as e:
             print(f"Помилка завантаження даних: {e}")
@@ -77,6 +77,7 @@ class ContactAssistant:
             record = Record(name)
             for arg, val in args.items():
                 if arg.lower() == 'phone':
+
                     record.add_phone(val)
                 elif arg.lower() == 'email':
                     record.add_email(val)
