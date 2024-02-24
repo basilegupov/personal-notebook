@@ -118,6 +118,8 @@ class Record:
         self.phones.append(phone_obj)
 
     def add_email(self, email):
+        if email in self.emails:
+            raise ValueError()
         email_obj = Email(email)
         self.emails.append(email_obj)
 
@@ -136,7 +138,7 @@ class Record:
 
     def remove_email(self, email):
         initial_len = len(self.emails)
-        self.emails = [e for e in self.phones if e.value != email]
+        self.emails = [e for e in self.emails if e.value != email]
         if len(self.emails) == initial_len:
             raise ValueError(f"{YLLOW}Такого email <--'{RED}{email}"
                              f"{YLLOW}-->' немає нажаль у вашій телефонній книжці")
@@ -161,8 +163,8 @@ class Record:
         found_numbers = [p for p in self.phones if p.value == phone]
         return found_numbers[0] if found_numbers else None
 
-    def find_email(self, phone):
-        found_email = [e for e in self.emails if e.value == phone]
+    def find_email(self, email):
+        found_email = [e for e in self.emails if e.value == email]
         return found_email[0] if found_email else None
 
     def days_to_birthday(self):
@@ -191,10 +193,10 @@ class Record:
 
     def __str__(self):
         return ('-'*50 + f"\nName: {str(self.name.value)}\n"
-                         f"Address: {str(self.address) if self.address else ''}\n "
+                         f"Address: {str(self.address) if self.address else ''}\n"
                 f"Birthday: {str(self.birthday if self.birthday else '')}\n"
-                f"Phones: {'; '.join(str(p.value) for p in self.phones)}\n"
-                f"E-mail: {'; '.join(str(p.value) for p in self.emails)}\n")
+                f"Phones: {'; '.join(str(p.value) for p in self.phones) if self.phones else ''}\n"
+                f"E-mail: {'; '.join(str(e.value) for e in self.emails) if self.emails else ''}\n")
 
 
 class AddressBook(UserDict):
@@ -224,12 +226,19 @@ class AddressBook(UserDict):
         return matching_records
 
     def add_record(self, record):
-        self.data[record.name.value] = record
+        
         if record.phones:
             for phone in record.phones:
                 if phone.value in self.dict_phones:
-                    raise ValueError(f"{phone.value} already exist on {self.dict_phones[phone.value]}")
-                self.dict_phones[phone.value] = record.name
+                    raise IndexError(f"{phone.value} already exist on {self.dict_phones[phone.value]}")
+                self.dict_phones[phone.value] = record.name.value
+        if record.emails:
+            for email in record.emails:
+                if email.value in self.dict_emails:
+                    raise IndexError(f"{email.value} already exist on {self.dict_emails[email.value]}")
+                self.dict_emails[email.value] = record.name.value
+        
+        self.data[record.name.value] = record
 
     def find_case_insensitive(self, name):
         for record in self.data.values():
@@ -241,10 +250,12 @@ class AddressBook(UserDict):
         if name in self.data:
             for phone in self.data[name].phones:
                 del self.dict_phones[phone.value]
+            for email in self.data[name].emails:
+                del self.dict_emails[email.value]
             del self.data[name]
             return 'Ok'
         else:
-            raise ValueError(NOT_FOUND_NAME)
+            raise IndexError(NOT_FOUND_NAME)
 
     def iterator(self, page_size=10):
         keys = list(self.data.keys())
@@ -257,9 +268,10 @@ class AddressBook(UserDict):
     def rename_contact(self, old_name: str, new_name: str):
         record = self.find(old_name)
         if record:
-            record.name.value = new_name
-            self.data[new_name] = record
             self.delete(old_name)
+            record.name.value = new_name
+            self.add_record(record)
+            
         else:
             raise ValueError(NOT_FOUND_NAME)
         return 'Ok'

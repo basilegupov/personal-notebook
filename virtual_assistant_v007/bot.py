@@ -62,34 +62,60 @@ class ContactAssistant:
                         phones = record_data.get("phones", [])
                         for phone in phones:
                             if phone in self.address_book.dict_phones:
-                                raise ValueError(f"{phone.value} already exist on {self.address_book.dict_phones[phone]}")
+                                raise IndexError(f"{phone} already exist on {self.address_book.dict_phones[phone]}")
                             record.add_phone(phone)
                         emails = record_data.get("emails", [])
                         for email in emails:
+                            if email in self.address_book.dict_emails:
+                                raise IndexError(f"{email} already exist on {self.address_book.dict_emails[email]}")
                             record.add_email(email)
 
                         self.address_book.add_record(record)
-        except (OSError, json.JSONDecodeError, KeyError) as e:
+        except (OSError, json.JSONDecodeError, KeyError, ValueError, IndexError) as e:
             print(f"Помилка завантаження даних: {e}")
 
     def add_contact(self, name, **args):
-        try:
-            record = Record(name)
-            for arg, val in args.items():
-                if arg.lower() == 'phone':
-
-                    record.add_phone(val)
-                elif arg.lower() == 'email':
-                    record.add_email(val)
-                elif arg.lower() == 'birthday':
-                    record.set_birthday(val)
-                elif arg.lower() == 'address':
-                    record.set_address(val)
-            self.address_book.add_record(record)
-            self.save_data()
-            return f"{YLLOW}Новий контакт успішно доданий!!!{PISKAZKA_SHOW_ALL}"
-        except ValueError as e:
-            raise InputError(str(e))
+        record = self.address_book.find(name)
+        if not record:
+            try:
+                record = Record(name)
+                for arg, val in args.items():
+                    if arg.lower() == 'phone':
+                        record.add_phone(val)
+                    elif arg.lower() == 'email':
+                        record.add_email(val)
+                    elif arg.lower() == 'birthday':
+                        record.set_birthday(val)
+                    elif arg.lower() == 'address':
+                        record.set_address(val)
+                self.address_book.add_record(record)
+                self.save_data()
+                return f"{YLLOW}Новий контакт успішно доданий!!!{PISKAZKA_SHOW_ALL}"
+            except ValueError as e:
+                raise InputError(str(e))
+        else:
+            try:
+                for arg, val in args.items():
+                    if arg.lower() == 'phone':
+                        print(arg,val, self.address_book.dict_phones)
+                        if val in self.address_book.dict_phones:
+                            raise IndexError(f"{val} already exist on {self.address_book.dict_phones[val]}")
+                        record.add_phone(val)
+                        # self.address_book.dict_phones[val] = record.name.value
+                    elif arg.lower() == 'email':
+                        if val in self.address_book.dict_emails:
+                            raise IndexError(f"{val} already exist on {self.address_book.dict_emails[val]}")
+                        record.add_email(val)
+                    elif arg.lower() == 'birthday':
+                        record.set_birthday(val)
+                    elif arg.lower() == 'address':
+                        record.set_address(val)
+                self.save_data()
+                return f"{YLLOW}Дані успішно додані!!!{PISKAZKA_SHOW_ALL}"
+            
+            except ValueError as e:
+                raise InputError(str(e))
+            
 
     def change_contact(self, name, newname=None, phone=None, email=None, address=None, birthday=None):
         try:
@@ -159,13 +185,16 @@ class ContactAssistant:
 
     def outlist(self, list_for_output):
             
-        result = f'{GREEN}{"Name":<10} {"Birthday":^12} {"Phone":<12} {"Email":<20} {"Address":<20} {YLLOW}\n'
+        # result = f'{GREEN}{"Name":<10} {"Birthday":^12} {"Phone":<12} {"Email":<20} {"Address":<20} {YLLOW}\n'
+        # for record in list_for_output:
+        #     phone_numbers = ', '.join(str(phone) for phone in record.phones)
+        #     emails = ', '.join(map(str, [email.value for email in record.emails if email.value]))
+        #     result += (f"{record.name.value:<10} {str(record.birthday):^12} {phone_numbers:<12}"
+        #                 f" {emails:<20} {str(record.address):<20}\n")
+        result = ''
         for record in list_for_output:
-            phone_numbers = ', '.join(str(phone) for phone in record.phones)
-            emails = ', '.join(map(str, [email.value for email in record.emails if email.value]))
-            result += (f"{record.name.value:<10} {str(record.birthday):^12} {phone_numbers:<12}"
-                        f" {emails:<20} {str(record.address):<20}\n")
-            
+            result += str(record)
+        result += '-'*50 + '\n'
         return result
 
     def show_all_contacts(self):

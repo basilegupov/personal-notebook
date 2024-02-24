@@ -1,191 +1,28 @@
 {
   "records": [
     {
-      "name": "Alisa",
+      "name": "Magna",
       "phones": [
-        "1241234568"
+        "0667896543",
+        "2349081234"
       ],
       "emails": [
-        "alis61@gmail.com"
-      ],
-      "birthday": null,
-      "address": "Paris"
-    },
-    {
-      "name": "Dmytro",
-      "phones": [
-        "0676542285"
-      ],
-      "emails": [
-        "dmytr0@meta.com.ua"
-      ],
-      "birthday": null,
-      "address": "Odesa"
-    },
-    {
-      "name": "Roman",
-      "phones": [
-        "0508543791"
-      ],
-      "emails": [
-        "romat1000@gmail.com"
-      ],
-      "birthday": "1977-04-10",
-      "address": "Kharkiv"
-    },
-    {
-      "name": "William",
-      "phones": [
-        "3231634568"
-      ],
-      "emails": [
-        "kingdom99@gmail.com"
-      ],
-      "birthday": "1987-05-10",
-      "address": null
-    },
-    {
-      "name": "Lui",
-      "phones": [
-        "3231634468"
-      ],
-      "emails": [
-        "lui2321@luilol.com"
-      ],
-      "birthday": "1985-02-15",
-      "address": null
-    },
-    {
-      "name": "Rom",
-      "phones": [
-        "0505852071"
-      ],
-      "emails": [
-        "df@mail.com"
-      ],
-      "birthday": "1971-08-22",
-      "address": "Kyiv"
-    },
-    {
-      "name": "Romaro",
-      "phones": [
-        "0508885522"
-      ],
-      "emails": [
-        "romaroma@roma.com"
-      ],
-      "birthday": "1985-05-25",
-      "address": "Kharkiv"
-    },
-    {
-      "name": "Cristopher",
-      "phones": [
-        "0000000000"
-      ],
-      "emails": [
-        "55555@gmail.com"
+        "gh34@gmail.com",
+        "hj@help.com"
       ],
       "birthday": null,
       "address": null
     },
     {
-      "name": "Trump",
+      "name": "Mama",
       "phones": [
-        "6667778899"
-      ],
-      "emails": [
-        "trygttggt@biden.gov"
-      ],
-      "birthday": "1922-04-28",
-      "address": "Miamy"
-    },
-    {
-      "name": "cat",
-      "phones": [
-        "1231234567"
+        "0984567382"
       ],
       "emails": [
         null
       ],
       "birthday": null,
       "address": null
-    },
-    {
-      "name": "John",
-      "phones": [
-        "2231234568"
-      ],
-      "emails": [
-        "asd5@gmail.com"
-      ],
-      "birthday": null,
-      "address": "kiev"
-    },
-    {
-      "name": "Poul",
-      "phones": [
-        "0504564556"
-      ],
-      "emails": [
-        "pol@fg.com"
-      ],
-      "birthday": "1980-03-02",
-      "address": null
-    },
-    {
-      "name": "Gendalf",
-      "phones": [
-        "1231234567"
-      ],
-      "emails": [
-        "asd@gmail.com"
-      ],
-      "birthday": null,
-      "address": "kiev"
-    },
-    {
-      "name": "Jude",
-      "phones": [
-        null
-      ],
-      "emails": [
-        "lawj@yahoo.com"
-      ],
-      "birthday": null,
-      "address": null
-    },
-    {
-      "name": "Antony",
-      "phones": [
-        null
-      ],
-      "emails": [
-        null
-      ],
-      "birthday": "1980-02-15",
-      "address": null
-    },
-    {
-      "name": "Boris",
-      "phones": [
-        "1231234566"
-      ],
-      "emails": [
-        "asd2@gmail.com"
-      ],
-      "birthday": "1931-01-01",
-      "address": "kiev"
-    },
-    {
-      "name": "Petro",
-      "phones": [
-        "0664445577"
-      ],
-      "emails": [
-        "petrik@poshta.ua"
-      ],
-      "birthday": "1999-05-04",
-      "address": "Mykolaiv"
     }
   ]
 }
