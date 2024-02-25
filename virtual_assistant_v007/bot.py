@@ -96,16 +96,18 @@ class ContactAssistant:
         else:
             try:
                 for arg, val in args.items():
+                    print(arg, val, record.phones, record.emails)
                     if arg.lower() == 'phone':
-                        print(arg,val, self.address_book.dict_phones)
                         if val in self.address_book.dict_phones:
                             raise IndexError(f"{val} already exist on {self.address_book.dict_phones[val]}")
                         record.add_phone(val)
                         # self.address_book.dict_phones[val] = record.name.value
                     elif arg.lower() == 'email':
+                        print(arg, val, record.phones, record.emails)
                         if val in self.address_book.dict_emails:
                             raise IndexError(f"{val} already exist on {self.address_book.dict_emails[val]}")
                         record.add_email(val)
+                        print(arg, val, record.phones, record.emails)
                     elif arg.lower() == 'birthday':
                         record.set_birthday(val)
                     elif arg.lower() == 'address':
@@ -115,7 +117,6 @@ class ContactAssistant:
             
             except ValueError as e:
                 raise InputError(str(e))
-            
 
     def change_contact(self, name, newname=None, phone=None, email=None, address=None, birthday=None):
         try:
@@ -123,9 +124,13 @@ class ContactAssistant:
             if record:
                 if phone:
                     record.phones = []
+                    if phone in self.address_book.dict_phones:
+                        raise IndexError(f"{phone} already exist on {self.address_book.dict_phones[phone]}")
                     record.add_phone(phone)
                 if email:
                     record.emails = []
+                    if email in self.address_book.dict_emails:
+                        raise IndexError(f"{email} already exist on {self.address_book.dict_emails[email]}")
                     record.add_email(email)
                 if address:
                     record.set_address(address)
@@ -204,7 +209,7 @@ class ContactAssistant:
         else:
             return self.outlist(records).strip()
         
-    def search_context(self, context:str):
+    def search_context(self, context: str):
 
         matching_records = self.address_book.search(context)
         if not matching_records:
@@ -220,6 +225,7 @@ class ContactAssistant:
 
         except (ValueError, IndexError) as e:
             raise InputError(str(e))
+
 
 class CommandHandler:
     
@@ -263,8 +269,6 @@ class CommandHandler:
             raise InputError(str(e))
 
     def handle_change(self, args):
-        if len(args) == 0:
-            raise InputError(BAD_COMMAND_CHANGE)
 
         contact_info = args.split(" ")
         if len(contact_info) != 3:
